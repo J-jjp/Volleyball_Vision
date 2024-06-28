@@ -1,5 +1,6 @@
-#ifndef COMMON_HPP  
-#define COMMON_HPP  
+#ifndef COMMON_HPP
+#define COMMON_HPP
+
 #include <opencv2/opencv.hpp>
 #include <librealsense2/rs.hpp>
 #include <iostream>
@@ -15,17 +16,13 @@
  * @brief 低通滤波类
  *
  */
-class LowPassFilter {
+class LowPassFilter
+{
 public:
-    LowPassFilter(double dt, double RC) : dt(dt), RC(RC), prev_y(0), first_run(true) {}
-
-    double filter(double x) {
-        if (first_run) {
-            first_run = false;
-            prev_y = x;
-        }
-        double alpha = dt / (RC + dt);
-        double y = alpha * x + (1 - alpha) * prev_y;
+    int filter(double x)
+    {
+        float alpha = 0.8;
+        int y = alpha * x + (1 - alpha) * prev_y;
         prev_y = y;
         return y;
     }
@@ -43,7 +40,7 @@ private:
 class SerialPort
 {
 public:
-    uint8_t send_date[12];
+    uint8_t send_date[15];
 
     typedef struct
     {
@@ -72,26 +69,6 @@ private:
     boost::asio::serial_port serial;
 };
 /**
- * @brief 限制数据范围
- *
- * @param date
- * @param min
- * @param max
- * @return float
- */
-// float limit_data(float date , float min, float max)
-// {
-//     if (date < min)
-//     {
-//         date = min;
-//     }
-//     if (date > max)
-//     {
-//         date = max;
-//     }
-//     return date;
-// }
-/**
  * @brief 将浮点数f转化为4个字节数据存放在byte[4]中
  *
  */
@@ -100,31 +77,5 @@ typedef union
     float fdata;
     unsigned long ldata;
 } FloatLongType;
-/**
- * @brief 将浮点数f转化为4个字节数据存放在byte[4]中
- *
- * @param a
- * @param b
- * @param c
- * @param byte
- */
-// void Float_to_Byte(float a, float b, float c, unsigned char byte[])
-// {
-//     FloatLongType fl, f2 ,f3;   
-//     fl.fdata = a;
-//     f2.fdata = b;
-//     f3.fdata = c;
-//     byte[0] = (unsigned char)fl.ldata;
-//     byte[1] = (unsigned char)(fl.ldata >> 8);
-//     byte[2] = (unsigned char)(fl.ldata >> 16);
-//     byte[3] = (unsigned char)(fl.ldata >> 24);
-//     byte[4] = (unsigned char)f2.ldata;
-//     byte[5] = (unsigned char)(f2.ldata >> 8);
-//     byte[6] = (unsigned char)(f2.ldata >> 16);
-//     byte[7] = (unsigned char)(f2.ldata >> 24);
-//     byte[8] = (unsigned char)f3.ldata;
-//     byte[9] = (unsigned char)(f3.ldata >> 8);
-//     byte[10] = (unsigned char)(f3.ldata >> 16);
-//     byte[11] = (unsigned char)(f3.ldata >> 24);
-// }
+
 #endif
